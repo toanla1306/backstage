@@ -38,6 +38,12 @@ integrations:
       # This is a Personal Access Token or PAT from GitHub. You can find out how to generate this token, and more information
       # about setting up the GitHub integration here: https://backstage.io/docs/integrations/github/locations#configuration
       token: ${GITHUB_TOKEN}
+  gitlab:
+    - host: gitlab.bankhub.com
+      baseUrl: http://gitlab.bankhub.com
+      apiBaseUrl: http://gitlab.bankhub.com/api/v4
+      token: glpat-Ssb7R62YdEQC-VpP8aLC
+      
     ### Example for how to add your GitHub Enterprise instance using the API:
     # - host: ghe.example.net
     #   apiBaseUrl: https://ghe.example.net/api/v3
@@ -72,6 +78,22 @@ scaffolder:
   # see https://backstage.io/docs/features/software-templates/configuration for software template options
 
 catalog:
+  providers:
+    gitlab:
+      yourProviderId:
+        host: gitlab.bankhub.com # Identifies one of the hosts set up in the integrations
+        branch: main # Optional. Used to discover on a specific branch
+        fallbackBranch: master # Optional. Fallback to be used if there is no default branch configured at the Gitlab repository. It is only used, if `branch` is undefined. Uses `master` as default
+        skipForkedRepos: false # Optional. If the project is a fork, skip repository
+        group: guests # Optional. Group and subgroup (if needed) to look for repositories. If not present the whole instance will be scanned
+        entityFilename: catalog-info.yaml # Optional. Defaults to `catalog-info.yaml`
+        projectPattern: '[\s\S]*' # Optional. Filters found projects based on provided patter. Defaults to `[\s\S]*`, which means to not filter anything
+        excludeRepos: [] # Optional. A list of project paths that should be excluded from discovery, e.g. group/subgroup/repo. Should not start or end with a slash.
+        schedule: # Same options as in TaskScheduleDefinition. Optional for the Legacy Backend System
+          # supports cron, ISO duration, "human duration" as used in code
+          frequency: { minutes: 30 }
+          # supports ISO duration, "human duration" as used in code
+          timeout: { minutes: 3 }
   import:
     entityFilename: catalog-info.yaml
     pullRequestBranchName: backstage-integration
@@ -93,6 +115,9 @@ catalog:
       target: ../../examples/org.yaml
       rules:
         - allow: [User, Group]
+    
+    # - type: gitlab-discovery
+    #   target: https://gitlab.com/group/subgroup/blob/main/catalog-info.yaml
 
     ## Uncomment these lines to add more example data
     # - type: url

@@ -6,7 +6,7 @@ metadata:
   title: Example Node.js Template
   description: An example template for the scaffolder that creates a simple Node.js service
 spec:
-  owner: user:guest
+  owner: group:guests
   type: service
 
   # These parameters are used to generate the input form in the frontend, and are
@@ -34,6 +34,7 @@ spec:
           ui:options:
             allowedHosts:
               - github.com
+              - gitlab.bankhub.com
 
   # These steps are executed in the scaffolder backend, using data that we gathered
   # via the parameters above.
@@ -50,11 +51,12 @@ spec:
     # This step publishes the contents of the working directory to GitHub.
     - id: publish
       name: Publish
-      action: publish:github
+      action: publish:gitlab
       input:
-        allowedHosts: ['github.com']
+        allowedHosts: ['github.com', 'gitlab.bankhub.com']
         description: This is ${{ parameters.name }}
         repoUrl: ${{ parameters.repoUrl }}
+        repoVisibility: public
 
     # The final step is to register our new component in the catalog.
     - id: register
